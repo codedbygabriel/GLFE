@@ -1,4 +1,4 @@
-namespace GLFE.DirectoryUtils
+namespace GLFE.DirectoryHelper
 {
     struct Explorer
     {

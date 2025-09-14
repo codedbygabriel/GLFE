@@ -1,4 +1,4 @@
-﻿using GLFE.DirectoryUtils;
+﻿using GLFE.DirectoryHelper;
 
 namespace GLFE
 {
