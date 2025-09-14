@@ -13,11 +13,17 @@ namespace GLFE.DirectoryUtils
         }
     }
 
-    class DirectoryAnalisis
+    class DirectoryRecover
     {
         static string _HOME_PATH = $"/home/{Environment.UserName}";
         static string _CURRENT_PATH = _HOME_PATH;
         private Explorer ExplorerVar = new Explorer();
+
+        public DirectoryRecover()
+        {
+            PrintHeader();
+            InitExplorerList();
+        }
 
         public void InitExplorerList()
         {
@@ -26,24 +32,28 @@ namespace GLFE.DirectoryUtils
 
         }
 
-        public DirectoryAnalisis()
+        public void PrintHeader()
         {
-            PrintHeader();
-            InitExplorerList();
-        }
+            Console.Write($"{Environment.UserName}, Current Working At: {_CURRENT_PATH}\t");
 
-        public void PrintHeader() =>
-            Console.WriteLine($"{Environment.UserName}, Current Working At: {_CURRENT_PATH}\t[p - print DIR], [d - open delete console].");
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write("[p - print DIR], ");
+
+            Console.ForegroundColor = ConsoleColor.DarkRed;
+            Console.WriteLine("[d - delete file|directory].");
+
+            Console.ResetColor();
+        }
 
         public void PrintExplorer()
         {
             Console.ForegroundColor = ConsoleColor.DarkCyan;
-			for (int i = 0; i < ExplorerVar.DirectoryList.Count() ; i++)
-			   Console.WriteLine($"[{i+1}]\t-\t{ExplorerVar.DirectoryList[i]}"); 
+            for (int i = 0; i < ExplorerVar.DirectoryList.Count(); i++)
+                Console.WriteLine($"[{i + 1}]\t-\t{ExplorerVar.DirectoryList[i]}");
 
             Console.ForegroundColor = ConsoleColor.Cyan;
-			for (int i = 0; i < ExplorerVar.FileList.Count() ; i++)
-			   Console.WriteLine($"[{ExplorerVar.DirectoryList.Count()+i+1}]\t-\t{ExplorerVar.FileList[i]}"); 
+            for (int i = 0; i < ExplorerVar.FileList.Count(); i++)
+                Console.WriteLine($"[{ExplorerVar.DirectoryList.Count() + i + 1}]\t-\t{ExplorerVar.FileList[i]}");
 
             Console.ResetColor();
         }
