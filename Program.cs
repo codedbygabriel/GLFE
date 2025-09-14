@@ -11,7 +11,7 @@ namespace GLFE
 
         static void ApplicationLoop()
         {
-            var DA = new DirectoryAnalisis();
+            var DA = new DirectoryRecover();
             while (true)
             {
 
