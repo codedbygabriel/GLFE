@@ -1,3 +1,5 @@
+using GLFE.ClipboardHelper;
+
 namespace GLFE.DirectoryHelper
 {
     struct Explorer
@@ -47,6 +49,7 @@ namespace GLFE.DirectoryHelper
 
         public void PrintExplorer()
         {
+
             Console.ForegroundColor = ConsoleColor.DarkCyan;
             for (int i = 0; i < ExplorerVar.DirectoryList.Count(); i++)
                 Console.WriteLine($"[{i + 1}]\t-\t{ExplorerVar.DirectoryList[i]}");
@@ -55,7 +58,70 @@ namespace GLFE.DirectoryHelper
             for (int i = 0; i < ExplorerVar.FileList.Count(); i++)
                 Console.WriteLine($"[{ExplorerVar.DirectoryList.Count() + i + 1}]\t-\t{ExplorerVar.FileList[i]}");
 
+
             Console.ResetColor();
+            SetToClipboard();
+        }
+
+        private void SetToClipboard()
+        {
+            string res = PathSelection();
+            if (!res.Equals("err"))
+            {
+                if (ClipboardUtils.SetterClipboard(res))
+                    Console.WriteLine("Copied to clipboard.");
+            }
+        }
+
+        private string PathSelection()
+        {
+            Console.Write("Copy a file/directory path? ");
+
+            if (Console.ReadKey().Key == ConsoleKey.Y)
+            {
+                int holder;
+                string path;
+
+                Console.Write("\nIndex: ");
+                string res = Console.ReadLine() ?? "err";
+
+                if (int.TryParse(res, out holder) && holder >= 0)
+                {
+                    List<string> IndexList = ExplorerVar.DirectoryList.Concat(ExplorerVar.FileList).ToList();
+                    try
+                    {
+                        path = IndexList.ElementAt(holder - 1);
+                        Console.WriteLine($"Found {path}");
+                        return path;
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine($"Index {holder} not found on Explorer...\n" + e);
+                    }
+                }
+
+            }
+
+            return "err";
+        }
+
+        public bool RemoveFileOrDirectory(string path)
+        {
+            if (Path.Exists(path))
+            {
+                if (Directory.Exists(path))
+                {
+                    Directory.Delete(path);
+                    return true;
+                }
+                else
+                {
+                    File.Delete(path);
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 
