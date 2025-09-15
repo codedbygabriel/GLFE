@@ -78,6 +78,9 @@ namespace GLFE.DirectoryHelper
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.Write("[m - move to], ");
 
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write("[r - Move or Rename file / directory ], ");
+
             Console.ForegroundColor = ConsoleColor.DarkGreen;
             Console.Write("[b - back to last dir], ");
 
@@ -160,8 +163,9 @@ namespace GLFE.DirectoryHelper
                 Console.Write("\nPath [FULL]: ");
                 res = Console.ReadLine() ?? "err";
 
-                if (Directory.Exists(res))
+                if (Directory.Exists(res) || File.Exists(res))
                 {
+					Console.WriteLine(res);
                     return res;
 
                 }
@@ -169,12 +173,15 @@ namespace GLFE.DirectoryHelper
 
             return "err";
         }
-
+        public void MoveOrRename(string path)
+        {
+				
+        }
         public bool RemoveFileOrDirectory(string path)
         {
             if (Path.Exists(path))
             {
-                if (Directory.Exists(path))
+                if (IsPathDir(path))
                 {
                     Directory.Delete(path);
                     return true;
@@ -188,6 +195,7 @@ namespace GLFE.DirectoryHelper
 
             return false;
         }
+		public bool IsPathFile(string path) => File.Exists(path);
+		public bool IsPathDir(string path) => Directory.Exists(path);
     }
-
 }
