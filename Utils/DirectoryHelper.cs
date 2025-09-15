@@ -30,7 +30,7 @@ namespace GLFE.DirectoryHelper
             InitExplorerList();
         }
 
-        public void InitExplorerList(string path = "")
+        public void InitExplorerList(string path = "", bool PreviousPath = false)
         {
             if (_IS_FIRST_TIME)
             {
@@ -38,9 +38,14 @@ namespace GLFE.DirectoryHelper
                 FillStructure();
             }
 
+            if (PreviousPath)
+            {
+                path = _PREVIOUS_PATH;
+            }
+
             if (!string.IsNullOrEmpty(path) && Directory.Exists(path))
             {
-				_PREVIOUS_PATH = _CURRENT_PATH;
+                _PREVIOUS_PATH = _CURRENT_PATH;
                 _CURRENT_PATH = path;
 
                 if (ExplorerVar.DirectoryList.Any())
@@ -62,6 +67,7 @@ namespace GLFE.DirectoryHelper
             foreach (var item in Directory.GetDirectories(_CURRENT_PATH)) ExplorerVar.DirectoryList.Add(item);
             foreach (var item in Directory.GetFiles(_CURRENT_PATH)) ExplorerVar.FileList.Add(item);
         }
+
         public void PrintHeader()
         {
             Console.Write($"{Environment.UserName}, Current Working At: {_CURRENT_PATH}\t");
@@ -71,6 +77,9 @@ namespace GLFE.DirectoryHelper
 
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.Write("[m - move to], ");
+
+            Console.ForegroundColor = ConsoleColor.DarkGreen;
+            Console.Write("[b - back to last dir], ");
 
             Console.ForegroundColor = ConsoleColor.DarkRed;
             Console.WriteLine("[d - delete file|directory].");
