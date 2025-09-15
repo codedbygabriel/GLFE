@@ -20,8 +20,11 @@ namespace GLFE
 
                 switch (Info.Key)
                 {
+                    case ConsoleKey.M:
+                        MoveOptionHandler(ref DA);
+                        break;
                     case ConsoleKey.D:
-                        DeleteOptionHandler(DA);
+                        DeleteOptionHandler(ref DA);
                         break;
                     case ConsoleKey.P:
                         DA.PrintExplorer();
@@ -32,7 +35,16 @@ namespace GLFE
             }
         }
 
-        static void DeleteOptionHandler(DirectoryRecover DA)
+		static void MoveOptionHandler(ref DirectoryRecover DA) {
+			string res = DA.FindPath();
+
+			if(!res.Equals("err"))
+			{
+				DA.InitExplorerList(res);
+			}
+		}
+
+        static void DeleteOptionHandler(ref DirectoryRecover DA)
         {
 			string path = ClipboardUtils.GetFromClipboard();
 
