@@ -19,6 +19,9 @@ namespace GLFE.DirectoryHelper
     {
         static string _HOME_PATH = $"/home/{Environment.UserName}";
         static string _CURRENT_PATH = _HOME_PATH;
+        static string _PREVIOUS_PATH = string.Empty;
+        static bool _IS_FIRST_TIME = true;
+
         private Explorer ExplorerVar = new Explorer();
 
         public DirectoryRecover()
@@ -27,19 +30,47 @@ namespace GLFE.DirectoryHelper
             InitExplorerList();
         }
 
-        public void InitExplorerList()
+        public void InitExplorerList(string path = "")
         {
-            foreach (var item in Directory.GetDirectories(_HOME_PATH)) ExplorerVar.DirectoryList.Add(item);
-            foreach (var item in Directory.GetFiles(_HOME_PATH)) ExplorerVar.FileList.Add(item);
+            if (_IS_FIRST_TIME)
+            {
+                _IS_FIRST_TIME = false;
+                FillStructure();
+            }
 
+            if (!string.IsNullOrEmpty(path) && Directory.Exists(path))
+            {
+				_PREVIOUS_PATH = _CURRENT_PATH;
+                _CURRENT_PATH = path;
+
+                if (ExplorerVar.DirectoryList.Any())
+                {
+                    ExplorerVar.DirectoryList.Clear();
+                }
+
+                if (ExplorerVar.FileList.Any())
+                {
+                    ExplorerVar.FileList.Clear();
+                }
+
+                FillStructure();
+            }
         }
 
+        private void FillStructure()
+        {
+            foreach (var item in Directory.GetDirectories(_CURRENT_PATH)) ExplorerVar.DirectoryList.Add(item);
+            foreach (var item in Directory.GetFiles(_CURRENT_PATH)) ExplorerVar.FileList.Add(item);
+        }
         public void PrintHeader()
         {
             Console.Write($"{Environment.UserName}, Current Working At: {_CURRENT_PATH}\t");
 
             Console.ForegroundColor = ConsoleColor.Green;
             Console.Write("[p - print DIR], ");
+
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.Write("[m - move to], ");
 
             Console.ForegroundColor = ConsoleColor.DarkRed;
             Console.WriteLine("[d - delete file|directory].");
@@ -49,7 +80,7 @@ namespace GLFE.DirectoryHelper
 
         public void PrintExplorer()
         {
-
+            Console.Clear();
             Console.ForegroundColor = ConsoleColor.DarkCyan;
             for (int i = 0; i < ExplorerVar.DirectoryList.Count(); i++)
                 Console.WriteLine($"[{i + 1}]\t-\t{ExplorerVar.DirectoryList[i]}");
@@ -79,11 +110,24 @@ namespace GLFE.DirectoryHelper
 
             if (Console.ReadKey().Key == ConsoleKey.Y)
             {
-                int holder;
-                string path;
+                return FindPath();
+            }
 
+            return "err";
+        }
+
+        public string FindPath()
+        {
+            int holder;
+            string path;
+
+            Console.Write("\nIndex Or Path: ");
+            string res = Console.ReadLine() ?? "err";
+
+            if (res.ToLower().Equals("index"))
+            {
                 Console.Write("\nIndex: ");
-                string res = Console.ReadLine() ?? "err";
+                res = Console.ReadLine() ?? "err";
 
                 if (int.TryParse(res, out holder) && holder >= 0)
                 {
@@ -100,6 +144,18 @@ namespace GLFE.DirectoryHelper
                     }
                 }
 
+            }
+
+            if (res.ToLower().Equals("path"))
+            {
+                Console.Write("\nPath [FULL]: ");
+                res = Console.ReadLine() ?? "err";
+
+                if (Directory.Exists(res))
+                {
+                    return res;
+
+                }
             }
 
             return "err";
