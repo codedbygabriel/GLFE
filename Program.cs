@@ -20,6 +20,9 @@ namespace GLFE
 
                 switch (Info.Key)
                 {
+                    case ConsoleKey.B:
+                        DA.InitExplorerList(PreviousPath: true);
+						break;
                     case ConsoleKey.M:
                         MoveOptionHandler(ref DA);
                         break;
