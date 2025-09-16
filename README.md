@@ -12,6 +12,13 @@ A Generic Linux File Explorer Written in C#
     </ul>
 </details>
 
+## Build Instructions
+
+- Go to the root directory of the project
+- Type on the terminal `dotnet build` 
+- Then `dotnet run` or search in the `GLFE/bin/Debug/net9.0/` the GLFE
+executable!
+
 <small>Made with ❤️ by Gabriel.</small>
 
 
