@@ -1,92 +1,87 @@
-﻿using GLFE.DirectoryHelper;
-using GLFE.ClipboardHelper;
+﻿using GLFE.Utils;
 
 namespace GLFE
 {
-    class Program
+    internal static class Program
     {
-        static void Main(string[] args)
+        private static void Main()
         {
             ApplicationLoop();
         }
 
-        static void ApplicationLoop()
+        private static void ApplicationLoop()
         {
-            var DA = new DirectoryRecover();
+            var da = new DirectoryRecover();
             while (true)
             {
 
-                ConsoleKeyInfo Info = Console.ReadKey(true);
+                var readKey = Console.ReadKey(true);
 
-                switch (Info.Key)
+                switch (readKey.Key)
                 {
                     case ConsoleKey.B:
-                        DA.InitExplorerList(PreviousPath: true);
+                        da.InitExplorerList(previousPath: true);
                         break;
                     case ConsoleKey.M:
-                        ChangeDirOptionHandler(ref DA);
+                        ChangeDirOptionHandler(ref da);
                         break;
                     case ConsoleKey.D:
-                        DeleteOptionHandler(ref DA);
+                        DeleteOptionHandler(ref da);
                         break;
                     case ConsoleKey.P:
-                        DA.PrintExplorer();
+                        da.PrintExplorer();
                         break;
                     case ConsoleKey.R:
-                        RenameOrMoveHandler(ref DA);
+                        RenameOrMoveHandler(ref da);
                         break;
                 }
                 Cleaner();
-                DA.PrintHeader();
+                da.PrintHeader();
             }
         }
 
-        static void RenameOrMoveHandler(ref DirectoryRecover DA)
+        private static void RenameOrMoveHandler(ref DirectoryRecover da)
         {
             Console.WriteLine("Original Path...");
-            string OriginalPath = DA.FindPath();
+            var originalPath = da.FindPath();
 
-            if (!OriginalPath.Equals("err"))
+            if (!originalPath.Equals("err"))
             {
-                Console.Write("(R)ename or (M)ove? ");
-                ConsoleKeyInfo Catch = Console.ReadKey(true);
-
                 Console.Write("Where To Path/File...");
-                string WhereToPath = Console.ReadLine() ?? "err";
-
+                var whereToPath = Console.ReadLine() ?? "err";
 
                 try
                 {
-                    if (DA.IsPathDir(OriginalPath))
+                    if (da.IsPathDir(originalPath))
                     {
-                        Directory.Move(sourceDirName: OriginalPath, destDirName: WhereToPath);
+                        Directory.Move(sourceDirName: originalPath, destDirName: whereToPath);
                     }
                     else
                     {
-                        File.Move(sourceFileName: OriginalPath, destFileName: WhereToPath);
+                        File.Move(sourceFileName: originalPath, destFileName: whereToPath);
                     }
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine("Something wen't wrong while moving / renaming file.\n" + e);
+                    Console.WriteLine("Something went wrong while moving / renaming file.\n" + e);
                 }
             }
 
         }
 
-        static void ChangeDirOptionHandler(ref DirectoryRecover DA)
+        private static void ChangeDirOptionHandler(ref DirectoryRecover da)
         {
-            string res = DA.FindPath();
+            var res = da.FindPath();
 
             if (!res.Equals("err"))
             {
-                DA.InitExplorerList(res);
+                da.InitExplorerList(res);
             }
         }
 
-        static void DeleteOptionHandler(ref DirectoryRecover DA)
+        private static void DeleteOptionHandler(ref DirectoryRecover da)
         {
-            string path = ClipboardUtils.GetFromClipboard();
+            var path = ClipboardUtils.GetFromClipboard();
 
             if (string.IsNullOrEmpty(path))
             {
@@ -98,7 +93,7 @@ namespace GLFE
 
             if (Console.ReadKey().Key == ConsoleKey.Y)
             {
-                DA.RemoveFileOrDirectory(path);
+                da.RemoveFileOrDirectory(path);
                 Console.WriteLine();
             }
             else
@@ -107,7 +102,7 @@ namespace GLFE
             }
         }
 
-        static void Cleaner()
+        private static void Cleaner()
         {
             Console.WriteLine("\nWaiting For KeyPress... ");
             Console.ReadLine();

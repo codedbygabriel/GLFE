@@ -1,15 +1,14 @@
 using System.Diagnostics;
 
-namespace GLFE.ClipboardHelper
+namespace GLFE.Utils
 {
-
-    class ClipboardUtils
+    static class ClipboardUtils
     {
         public static bool SetterClipboard(string res)
         {
             try
             {
-                Process ProcessVar = new Process
+                var processVar = new Process
                 {
                     StartInfo = new ProcessStartInfo
                     {
@@ -21,10 +20,10 @@ namespace GLFE.ClipboardHelper
                     }
                 };
 
-                ProcessVar.Start();
-                ProcessVar.StandardInput.Write(res);
-                ProcessVar.StandardInput.Close();
-                ProcessVar.WaitForExit();
+                processVar.Start();
+                processVar.StandardInput.Write(res);
+                processVar.StandardInput.Close();
+                processVar.WaitForExit();
                 return true;
             }
             catch (Exception e)
@@ -38,7 +37,7 @@ namespace GLFE.ClipboardHelper
         {
             try
             {
-                Process ProcessVar = new Process
+                var processVar = new Process
                 {
                     StartInfo = new ProcessStartInfo
                     {
@@ -50,9 +49,9 @@ namespace GLFE.ClipboardHelper
                     }
                 };
 
-                ProcessVar.Start();
-                string res = ProcessVar.StandardOutput.ReadToEnd();
-                ProcessVar.WaitForExit();
+                processVar.Start();
+                string res = processVar.StandardOutput.ReadToEnd();
+                processVar.WaitForExit();
 
                 return res;
             }

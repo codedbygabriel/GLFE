@@ -1,28 +1,19 @@
-using GLFE.ClipboardHelper;
-
-namespace GLFE.DirectoryHelper
+namespace GLFE.Utils
 {
-    struct Explorer
+    internal struct Explorer()
     {
-        public List<string> FileList;
-        public List<string> DirectoryList;
-
-        public Explorer()
-        {
-            FileList = new List<string>();
-            DirectoryList = new List<string>();
-
-        }
+        public List<string> FileList = new();
+        public List<string> DirectoryList = new();
     }
 
-    class DirectoryRecover
+    internal class DirectoryRecover
     {
-        static string _HOME_PATH = $"/home/{Environment.UserName}";
-        static string _CURRENT_PATH = _HOME_PATH;
-        static string _PREVIOUS_PATH = string.Empty;
-        static bool _IS_FIRST_TIME = true;
+        static string _homePath = $"/home/{Environment.UserName}";
+        static string _currentPath = _homePath;
+        static string _previousPath = string.Empty;
+        static bool _isFirstTime = true;
 
-        private Explorer ExplorerVar = new Explorer();
+        private Explorer _explorerVar = new Explorer();
 
         public DirectoryRecover()
         {
@@ -30,32 +21,32 @@ namespace GLFE.DirectoryHelper
             InitExplorerList();
         }
 
-        public void InitExplorerList(string path = "", bool PreviousPath = false)
+        public void InitExplorerList(string path = "", bool previousPath = false)
         {
-            if (_IS_FIRST_TIME)
+            if (_isFirstTime)
             {
-                _IS_FIRST_TIME = false;
+                _isFirstTime = false;
                 FillStructure();
             }
 
-            if (PreviousPath)
+            if (previousPath)
             {
-                path = _PREVIOUS_PATH;
+                path = _previousPath;
             }
 
             if (!string.IsNullOrEmpty(path) && Directory.Exists(path))
             {
-                _PREVIOUS_PATH = _CURRENT_PATH;
-                _CURRENT_PATH = path;
+                _previousPath = _currentPath;
+                _currentPath = path;
 
-                if (ExplorerVar.DirectoryList.Any())
+                if (_explorerVar.DirectoryList.Any())
                 {
-                    ExplorerVar.DirectoryList.Clear();
+                    _explorerVar.DirectoryList.Clear();
                 }
 
-                if (ExplorerVar.FileList.Any())
+                if (_explorerVar.FileList.Any())
                 {
-                    ExplorerVar.FileList.Clear();
+                    _explorerVar.FileList.Clear();
                 }
 
                 FillStructure();
@@ -64,13 +55,13 @@ namespace GLFE.DirectoryHelper
 
         private void FillStructure()
         {
-            foreach (var item in Directory.GetDirectories(_CURRENT_PATH)) ExplorerVar.DirectoryList.Add(item);
-            foreach (var item in Directory.GetFiles(_CURRENT_PATH)) ExplorerVar.FileList.Add(item);
+            foreach (var item in Directory.GetDirectories(_currentPath)) _explorerVar.DirectoryList.Add(item);
+            foreach (var item in Directory.GetFiles(_currentPath)) _explorerVar.FileList.Add(item);
         }
 
         public void PrintHeader()
         {
-            Console.Write($"{Environment.UserName}, Current Working At: {_CURRENT_PATH}\t");
+            Console.Write($"{Environment.UserName}, Current Working At: {_currentPath}\t");
 
             Console.ForegroundColor = ConsoleColor.Green;
             Console.Write("[p - print DIR], ");
@@ -94,12 +85,12 @@ namespace GLFE.DirectoryHelper
         {
             Console.Clear();
             Console.ForegroundColor = ConsoleColor.DarkCyan;
-            for (int i = 0; i < ExplorerVar.DirectoryList.Count(); i++)
-                Console.WriteLine($"[{i + 1}]\t-\t{ExplorerVar.DirectoryList[i]}");
+            for (int i = 0; i < _explorerVar.DirectoryList.Count(); i++)
+                Console.WriteLine($"[{i + 1}]\t-\t{_explorerVar.DirectoryList[i]}");
 
             Console.ForegroundColor = ConsoleColor.Cyan;
-            for (int i = 0; i < ExplorerVar.FileList.Count(); i++)
-                Console.WriteLine($"[{ExplorerVar.DirectoryList.Count() + i + 1}]\t-\t{ExplorerVar.FileList[i]}");
+            for (int i = 0; i < _explorerVar.FileList.Count(); i++)
+                Console.WriteLine($"[{_explorerVar.DirectoryList.Count() + i + 1}]\t-\t{_explorerVar.FileList[i]}");
 
 
             Console.ResetColor();
@@ -143,10 +134,10 @@ namespace GLFE.DirectoryHelper
 
                 if (int.TryParse(res, out holder) && holder >= 0)
                 {
-                    List<string> IndexList = ExplorerVar.DirectoryList.Concat(ExplorerVar.FileList).ToList();
+                    List<string> indexList = _explorerVar.DirectoryList.Concat(_explorerVar.FileList).ToList();
                     try
                     {
-                        path = IndexList.ElementAt(holder - 1);
+                        path = indexList.ElementAt(holder - 1);
                         Console.WriteLine($"Found {path}");
                         return path;
                     }
